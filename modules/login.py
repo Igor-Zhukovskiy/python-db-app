@@ -11,8 +11,8 @@ class Login():
         self.loginCheck()
 
     def setLogin(self):
-        print(self.loginStatus)
         self.loginStatus = True
+        # print(self.loginStatus)
         self.root.destroy()
 
     def loginCheck(self):
