@@ -1,5 +1,11 @@
-from multiprocessing import connection
 import mysql.connector
+
+# последовательность подключения к бд
+        # cnx = connect(host, user, passowrd, database) для подключения к базе данных
+        # cur = cnx.cursor(buffered = True) подготовка к передаче запроса
+        # cur.execute(''' SQL запрос ''') запрос
+        # cur.fetchall() возвращает результат запроса
+        # cnx.commit() завершает вводимую комманду
 
 # Используется для работы с БД
 class Db:
@@ -11,12 +17,19 @@ class Db:
             password = "password", # при необходимости введите пароль от своего локального сервера
             database = "python_app_db"
         )
-
         # используется для создания запросов
         self.cur = self.cnx.cursor(buffered = True)
 
-        # последовательность подключения к бд
-        # cnx = connect(host, user, passowrd, database) для подключения к базе данных
-        # cur = cnx.cursor(buffered = True) подготовка к передаче запроса
-        # cur.execute(''' SQL запрос ''') запрос
-        # cur.fetchall() возвращает результат запроса
+    # для внесения данных в таблицу consoles
+    def insertConsole(self, consoleName):
+        self.cur.execute(f'''Insert into consoles(title) values ("{consoleName}"); ''')
+        self.cnx.commit()
+
+    # для внесения данных в таблицу employees
+    def insertEmployee(self, name, password):
+        self.cur.execute(f'''Insert into employees(name, password) values ("{name}", "{password}")''')
+        self.cnx.commit
+    
+    def getEmployee(self, name, password):
+        self.cur.execute(f'''Select name, password From employees Where name = "{name}" and password = "{password}"''')
+        return self.cur.fetchall()
