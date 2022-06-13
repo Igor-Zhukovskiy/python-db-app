@@ -28,8 +28,21 @@ class Db:
     # для внесения данных в таблицу employees
     def insertEmployee(self, name, password):
         self.cur.execute(f'''Insert into employees(name, password) values ("{name}", "{password}")''')
-        self.cnx.commit
+        self.cnx.commit()
     
     def getEmployee(self, name, password):
         self.cur.execute(f'''Select name, password From employees Where name = "{name}" and password = "{password}"''')
         return self.cur.fetchall()
+
+    def updateConsoles(self, id, title):
+        self.cur.execute(f'''Update consoles Set title = "{title}" Where id = {id};''')
+        self.cnx.commit()
+    
+    def removeConsoles(self, id):
+        self.cur.execute(f'''Delete From consoles Where id = {id} ''')
+        self.cnx.commit()
+
+    def searchConsoles(self, title):
+        self.cur.execute(f'''Select id From consoles Where title Like '{title}%' ''')
+        return self.cur.fetchall()
+        # self.cnx.commit()

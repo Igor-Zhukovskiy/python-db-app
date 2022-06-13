@@ -4,14 +4,17 @@
 # ==========================================
 
 # ипортирование модулей python
+from socket import timeout
 import tkinter as tk
 from tkinter import ttk
 
 # импротирование локальных модулей
 from modules.db import Db
 from modules.login import Login
-# from modules.update import Update
+from modules.remove import Remove 
 from modules.insert import Insert
+from modules.update import Update
+from modules.search import Search
 
 # основной класс программы
 class Main(tk.Frame):
@@ -32,11 +35,15 @@ class Main(tk.Frame):
 
         btnAdd = tk.Button(toolBar, text="Add", bd=0, command= self.dialogAddRow)
         btnAdd.pack(side=tk.LEFT)
-        btnRemove = tk.Button(toolBar, text="Remove", bd=0)
+        btnRemove = tk.Button(toolBar, text="Remove", bd=0, command=self.dialogRemoveRow)
         btnRemove.pack(side=tk.LEFT)
-        btnSearch = tk.Button(toolBar, text="Search", bd=0)
+        btnSearch = tk.Button(toolBar, text="Search", bd=0, command=self.dialogSearchRow)
         btnSearch.pack(side=tk.LEFT)
-        btnUpdate = tk.Button(toolBar, text="Update", bd=0, command=self.viewRecords)
+        btnUpdate = tk.Button(toolBar, text="Update", bd=0, command=self.dialogUpdateRow)
+        btnUpdate.pack(side=tk.LEFT)
+        btnUpdate = tk.Button(toolBar, text="Refresh", bd=0, command=self.viewRecords)
+        btnUpdate.pack(side=tk.LEFT)
+        btnUpdate = tk.Button(toolBar, text="Log out", bd=0, command=self.logOut)
         btnUpdate.pack(side=tk.LEFT)
 
         self.tree = ttk.Treeview(self.root, columns=('id', 'title'), height=15, show='headings')
@@ -54,19 +61,30 @@ class Main(tk.Frame):
         [self.tree.insert('', 'end', values=row) for row in self.db.cur.fetchall()]
 
     def dialogAddRow(self):
-        self.viewRecords()
         Insert(self.root, self.db)
+        self.viewRecords()
+    
+    def dialogRemoveRow(self):
+        Remove(self.root, self.db)
+        self.viewRecords()
+
+    def dialogUpdateRow(self):
+        Update(self.root, self.db)
+        self.viewRecords()
+    
+    def dialogSearchRow(self):
+        Search(self.root, self.db)
+        self.viewRecords()
+    
+    def logOut(self):
+        self.root.destroy()
+        loginCheck()
+        start()
+
 
 
 # функция запуску окна входа пользователя
 # использует условие с exit(), если не выполняется то остонавливает выполнения программы 
-
-def loginCheck():
-    login = Login()
-    login.master.mainloop()
-    # if login.loginStatus == False:
-    if login.login_seccessful == False:
-        exit()
 
 # функция запуска основного приложения
 def start():
@@ -78,6 +96,13 @@ def start():
     root.geometry('650x450')
     root.mainloop()
 
+def loginCheck():
+    login = Login()
+    login.master.mainloop()
+    # if login.loginStatus == False:
+    if login.login_seccessful == False:
+        exit()
+
 if __name__ == "__main__":
-    loginCheck()
-    start()
+        loginCheck()
+        start()
